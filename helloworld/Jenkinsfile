@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Scar2603/JenkinsPipeline.git', branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                bat 'mvn exec:java -Dexec.mainClass="com.example.App"'
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true`
+            cleanWs()
+        }
+    }
+}
