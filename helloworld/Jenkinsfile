@@ -7,7 +7,7 @@ pipeline {
                 git url: 'https://github.com/Scar2603/JenkinsPipeline.git', branch: 'main'
             }
         }
-
+        
         stage('Build') {
             steps {
                 dir('helloworld') { 
@@ -15,22 +15,28 @@ pipeline {
                 }
             }
         }
+        
         stage('Test') {
             steps {
-                bat 'mvn test'
+                dir('helloworld') { 
+                    bat 'mvn test'
+                }
             }
         }
-
+        
         stage('Run') {
             steps {
-                bat 'mvn exec:java -Dexec.mainClass="com.example.App"'
+                dir('helloworld') {
+                    bat 'mvn exec:java -Dexec.mainClass="com.example.App"' 
+                }
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            archiveArtifacts artifacts: 'helloworld/target/*.jar', fingerprint: true 
+            
             cleanWs()
         }
     }
