@@ -10,10 +10,11 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn clean package'
+                dir('helloworld') { 
+                    bat 'mvn clean package'
+                }
             }
         }
-
         stage('Test') {
             steps {
                 bat 'mvn test'
